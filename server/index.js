@@ -60,7 +60,8 @@ var httpDefault =
         '</body>' +
     '</html>'
 ;
-var httpError = 
+var httpError = function(title, description){
+    return String(
     '<!DOCTYPE html>' +
     '<html>' + 
         '<head>' +
@@ -72,10 +73,31 @@ var httpError =
         '<body>' +
             '<h1>' + conf.serviceName + '</h1>' +
             '<hr />' +
-            '<h2>Error: Unknown API</h2>' +
+            '<h2>Error: ' + title + '</h2>' +
+            description +
         '</body>' +
     '</html>'
-;
+    );
+};
+var httpHelp = function(title, description){
+    return String(
+    '<!DOCTYPE html>' +
+    '<html>' + 
+        '<head>' +
+            '<meta charset="utf-8" />' + 
+            '<title>' + 
+                'NeoAtlantis Weather Information Relaying Server' + 
+            '</title>' +
+        '</head>' +
+        '<body>' +
+            '<h1>' + conf.serviceName + '</h1>' +
+            '<hr />' +
+            '<h2>Help: ' + title + '</h2>' +
+            description +
+        '</body>' +
+    '</html>'
+    );
+};
 
 //////////////////////////////////////////////////////////////////////////////
 // IO system, via HTTP and SocketIO
@@ -87,6 +109,7 @@ function handler(req, res){
         urlData = querystring.parse(urlParsed.query);
 
     var apiName = urlParsed.pathname.slice(1).replace(/\//g, '-');
+    console.log('ACCESS via HTTP: ' + apiName);
 
     if('' == apiName){
         res.writeHead(200);
@@ -97,14 +120,15 @@ function handler(req, res){
     var accessService = service.call(apiName);
     if(!accessService){
         res.writeHead(404);
-        res.end(httpError);
+        res.end(httpError('Unknown API name', ''));
+        console.log('> Unknown API name.');
         return;
     };
 
     function httpCallbackAPI(ret){
         if(toString.apply(ret) === '[object Error]'){
             res.writeHead(404);
-            res.end(ret.message);
+            res.end(httpError('API execution error', ret.message));
             return;
         };
         res.writeHead(200);
@@ -113,7 +137,7 @@ function handler(req, res){
 
     function httpCallbackHelp(description){
         res.writeHead(200);
-        res.end(description);
+        res.end(httpHelp(apiName, description));
     };
 
     if(urlParsed.query)
