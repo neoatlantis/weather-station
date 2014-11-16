@@ -13,7 +13,7 @@ module.exports.api = function($, data, cb){
             date:'2008-06-23',
         },
         function(err, res){
-            console.log(res);
+            console.log(err, res);
             cb(null);
         }
     );
