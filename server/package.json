@@ -4,7 +4,8 @@
   "description": "Server part of the NeoAtlantis Weather Information Relaying Service.",
   "main": "index.js",
   "dependencies": {
-    "socket.io": "1.2.*"
+    "socket.io": "1.2.*",
+    "config": "*"
   },
   "devDependencies": {},
   "scripts": {

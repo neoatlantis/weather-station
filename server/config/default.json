@@ -1,0 +1,14 @@
+{
+    "service": {
+        "name": "NeoAtlantis Weather Information Relaying Service",
+        "providers": [
+            {
+                "name": "NeoAtlantis(Development)",
+                "email": "rijndael@yeah.net"
+            }
+        ]
+    },
+    "server": {
+        "listen": 10132
+    }
+}
