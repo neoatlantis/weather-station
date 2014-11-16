@@ -4,6 +4,17 @@ module.exports.help = function(cb){
     );
 };
 
-module.exports.api = function(data, cb){
-    cb(Error(''));
+module.exports.api = function($, data, cb){
+    $.get(
+        'http://api.met.no/weatherapi/sunrise/1.0/',
+        {
+            lat: '71.0',
+            lon:'-69.58',
+            date:'2008-06-23',
+        },
+        function(err, res){
+            console.log(res);
+            cb(null);
+        }
+    );
 };

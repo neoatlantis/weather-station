@@ -58,6 +58,7 @@ var httpDefault =
             '<h2>This service is now run by: </h2>' +
             httpDefaultServiceProviders +
             '<h2>Currently following data are being served: </h2>' +
+            'Click for more details. <br />' +
             httpDefaultDataSourceList + 
         '</body>' +
     '</html>'
