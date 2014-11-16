@@ -30,6 +30,14 @@ httpDefaultServiceProviders += '</ul>';
 
 // data source list
 var httpDefaultDataSourceList = '<ul>';
+var serviceList = service.list();
+for(var i=0; i<serviceList.length; i++){
+    httpDefaultDataSourceList
+        += '<li>'
+        + serviceList[i]
+        + '</li>'
+    ;
+};
 httpDefaultDataSourceList += '</ul>';
 
 // page

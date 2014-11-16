@@ -1,6 +1,6 @@
 /* General Inquiry Replyer */
 var list = [
-    
+    'test',
 ];
 
 module.exports = {
