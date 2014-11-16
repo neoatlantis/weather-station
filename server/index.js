@@ -3,6 +3,7 @@ conf.serviceName = config.get('service.name');
 conf.serviceProviders = config.get('service.providers');
 
 var url = require('url');
+var querystring = require('querystring');
 var app = require('http').createServer(handler);
 var io = require('socket.io')(app);
 
@@ -74,7 +75,8 @@ var httpError =
 
 // HTTP handler
 function handler(req, res){
-    var urlParsed = url.parse(req.url);
+    var urlParsed = url.parse(req.url),
+        urlData = querystring.parse(urlParsed.query);
 
     var apiName = urlParsed.pathname.slice(1).replace(/\//g, '-');
 
@@ -84,24 +86,69 @@ function handler(req, res){
         return;
     };
 
-    var accessService = service(apiName);
+    var accessService = service.call(apiName);
     if(!accessService){
         res.writeHead(404);
         res.end(httpError);
         return;
     };
 
-    if(urlParsed.query){
-        
-    } else {
-        
+    function httpCallbackAPI(ret){
+        if(toString.apply(ret) === '[object Error]'){
+            res.writeHead(404);
+            res.end(ret.message);
+            return;
+        };
+        res.writeHead(200);
+        res.end(JSON.stringify(ret));
     };
+
+    function httpCallbackHelp(description){
+        res.writeHead(200);
+        res.end(description);
+    };
+
+    if(urlParsed.query)
+        accessService.api(urlData, httpCallbackAPI);
+    else
+        accessService.help(httpCallbackHelp);
 };
 
 // SocketIO handler
 io.on('connection', function(socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
+    var list = service.list(),
+        serviceAccessor = service.call;
+
+    function socketListenerFactory(name, help){
+        // callbacks
+        function socketCallbackHelp(ret){
+            socket.emit('help', {
+                'api': name,
+                'message': ret,
+            });
+        };
+
+        function socketCallbackAPI(ret){
+            if(toString.apply(ret) === '[object Error]')
+                return socket.emit('error', {
+                    'api': name,
+                    'message': ret.message,
+                });
+            socket.emit(name, ret);
+        };
+
+        if(help)
+            return function(){
+                serviceAccessor(name).help(socketCallbackHelp);
+            };
+        else
+            return function(data){
+                serviceAccessor(name).api(data, socketCallbackHelp);
+            };
+    };
+
+    for(var i=0; i<list; i++){
+        socket.on(list[i], socketListenerFactory(list[i], false));
+        socket.on(list[i] + '/help', socketListenerFactory(list[i], true));
+    };
 });
