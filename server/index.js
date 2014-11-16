@@ -34,7 +34,9 @@ var serviceList = service.list();
 for(var i=0; i<serviceList.length; i++){
     httpDefaultDataSourceList
         += '<li>'
+        + '<a href="/' + serviceList[i].replace(/\-/g, '/') + '">'
         + serviceList[i]
+        + '</a>'
         + '</li>'
     ;
 };
@@ -92,6 +94,7 @@ var httpHelp = function(title, description){
         '<body>' +
             '<h1>' + conf.serviceName + '</h1>' +
             '<hr />' +
+            '<a href="/">Back</a>' +
             '<h2>Help: ' + title + '</h2>' +
             description +
         '</body>' +
