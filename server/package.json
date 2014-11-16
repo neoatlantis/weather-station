@@ -1,0 +1,15 @@
+{
+  "name": "weather-station-server",
+  "version": "0.0.1",
+  "description": "Server part of the NeoAtlantis Weather Information Relaying Service.",
+  "main": "index.js",
+  "dependencies": {
+    "socket.io": "1.2.*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "NeoAtlantis",
+  "license": "GPLv3"
+}
